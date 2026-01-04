@@ -1,4 +1,5 @@
-# 1. Obtenir el data.frame "iris" desde R base:
+# 1. Obtenir el data.frame "iris" desde R base (así podemos generar una copia del 
+# documento en la carpeta:
 
 write.csv(iris, "iris.csv", row.names = FALSE) # Genera el document en format csv en la carpeta del projecte.
 
@@ -150,7 +151,13 @@ long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
 
 print(long_sep_separado)
 
-## 
+## Poner los datos en forma larga para poder hacer histograma de todas las 
+## variables y todas las especies con pivot longer
+
+
+
+
+
 
 
 
