@@ -108,7 +108,6 @@ print(sd_por_especie)
 
 
 
-
 # 4.Análisis Gráfico Univariante
 
 ## Analiza cada variable por separado para ver su distribución.
@@ -151,9 +150,17 @@ long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
 
 print(long_sep_separado)
 
+<<<<<<< HEAD
 ## Poner los datos en forma larga para poder hacer histograma de todas las 
 ## variables y todas las especies con pivot longer
 
+=======
+
+## Poner los datos en forma larga para poder hacer histograma de todas las 
+## variables y todas las especies con pivot longer 
+
+pivot_longer
+>>>>>>> f40a16c (Copias del documento)
 
 
 
@@ -170,6 +177,7 @@ print(long_sep_separado)
 # Observa si las cajas (el 50% central de los datos) se solapan o están bien separadas entre especies.
 
   
+
 
 
 
