@@ -86,11 +86,18 @@ write.csv(res_final, "res_final.csv", row.names = FALSE)
 
 library(tidyverse)
 
+## For 1 variable
+
 media_long_sepalo <- Datos_iris %>% 
   group_by(Species) %>% 
   summarise(media_long_sepalo = mean(Sepal.Length))
 
+print(media_long_sepalo)
+
+## For all numeric variables:
+
 help(across)
+
 
 Medias_por_especie <- Datos_iris %>% 
   group_by(Species) %>% 
@@ -102,7 +109,6 @@ print(Medias_por_especie)
 sd_por_especie <- Datos_iris %>% 
   group_by(Species) %>% 
   summarise(across(where(is.numeric), \(x) sd(x, na.rm = TRUE)))
-
 
 print(sd_por_especie)
 
@@ -133,7 +139,7 @@ long_sep_sobrepuesto <- ggplot(Datos_iris, aes(x = Sepal.Length, fill = Species)
 print(long_sep_sobrepuesto)
 
 
-# Histogramas separados (facet_wrap o facet_grid)
+# Histogramas separados (facet_wrap o facet_grid):
 
 long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
   geom_histogram(
@@ -150,17 +156,106 @@ long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
 
 print(long_sep_separado)
 
-<<<<<<< HEAD
+
+# Hacer una función con el código anterior para poder aplicarlo a las 
+# otras variables.
+
+library(tidyverse)
+library(rlang)
+
+## Aquí vamos a utilizar funciones del paquete tidyverse dentro de una
+## función personalizada, y para eso necesitamos usar el paquete rlang.
+
+hist_todo <- function(data, variable){
+  
+  ggplot(data, aes(x = {{ variable }})) +
+    geom_histogram(
+      bins = 20,
+      fill = "pink",
+      color = "black"
+    ) +
+    facet_wrap(~ Species) +
+    labs(
+      title = as_label(enquo(variable)), 
+      x = "Longitud en centímetros",
+      y = "Frecuencia"
+    )
+  
+}
+
+
+## Usamos la función "hist_todo" para crear los histogramas de cada variable
+
+colnames(Datos_iris)
+
+longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
+anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
+longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
+anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
+
+
 ## Poner los datos en forma larga para poder hacer histograma de todas las 
 ## variables y todas las especies con pivot longer
 
-=======
+Datos_iris_largo <- Datos_iris %>%
+  pivot_longer(cols = 1:4, names_to = "measure", values_to = "values")
 
-## Poner los datos en forma larga para poder hacer histograma de todas las 
-## variables y todas las especies con pivot longer 
+View(Datos_iris_largo)
 
-pivot_longer
->>>>>>> f40a16c (Copias del documento)
+
+
+
+
+
+
+
+for(i in colnames(Datos_iris)[1:4]){
+  
+  x <- hist_todo(Datos_iris, i)
+  
+  ggplot2::ggsave(
+    filename = paste(i,".pdf", sep = ""),
+    plot = x,
+    device = "pdf"
+  )
+  
+  
+}
+  
+  
+  
+
+
+longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
+anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
+longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
+anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
+
+
+histogramas <- c(longitud_sepalo, anchura_sepalo, longitud_petalo, anchura_petalo)
+
+histogramas[1]
+
+str(histogramas)
+
+for(i in histogramas)
+
+ggplot2::ggsave(
+  filename = paste(i,".pdf", sep = ""),
+  plot = i,
+  device = "pdf"
+)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

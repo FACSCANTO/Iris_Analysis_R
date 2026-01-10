@@ -1,0 +1,127 @@
+---
+title: "Iris_Analysis"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Aquí tienes el esquema completo del proyecto, estructurado paso a paso desde la exploración inicial hasta el análisis inferencial.
+
+### Fase 1: Exploración y Limpieza de Datos
+
+Antes de lanzarte a graficar, necesitas conocer la estructura de tus datos. Aunque `iris` viene limpio, es buena práctica verificarlo.
+
+-   **Inspección de estructura:** Revisa el tipo de dato de cada columna (deben ser 4 numéricas y 1 factor).
+
+-   **Resumen global:** Genera un resumen estadístico básico (Mínimo, 1er Cuartil, Mediana, Media, 3er Cuartil, Máximo) para todo el conjunto.
+
+-   **Verificación de nulos:** Confirma que no existan valores `NA` (valores perdidos).
+
+### Fase 2: Análisis Descriptivo (Tablas)
+
+Aquí vas a generar los números que sustentarán tus gráficos posteriores.
+
+1.  **Tabla de estadísticos generales:** Crea una tabla que contenga la media y la desviación estándar para cada una de las 4 variables cuantitativas (*Sepal.Length, Sepal.Width, Petal.Length, Petal.Width*).
+
+2.  **Tabla agrupada por Especies:** Esta es vital. Debes agrupar los datos por la columna `Species` y calcular la media y desviación estándar para cada variable dentro de cada grupo.
+
+    -   *Objetivo:* Ver numéricamente qué especie tiene los pétalos más grandes o los sépalos más anchos antes de verlo visualmente.
+
+### Fase 3: Visualización Comparativa (Univariante)
+
+Aquí abordarás tu petición de "barras de puntos". En R, esto suele referirse a un **Stripchart** (gráfico de puntos 1D) o un gráfico de puntos con "jitter" (ruido aleatorio para que no se solapen).
+
+El esquema de gráficos a generar:
+
+Debes crear 4 gráficos distintos (uno para cada variable numérica). En cada gráfico:
+
+-   **Eje X:** La variable `Species`.
+
+-   **Eje Y:** La variable numérica (ej. *Sepal.Length*).
+
+-   **Geometría:** Puntos dispersos (jitter).
+
+-   **Elementos extra sugeridos:** Añade un diagrama de caja (*Boxplot*) o la media marcada sobre los puntos para dar contexto de distribución.
+
+> **Qué buscar aquí:** ¿Hay alguna especie que se separe claramente de las otras en alguna variable? (Pista: Fíjate bien en las medidas de los pétalos).
+
+### Fase 4: Análisis de Correlación (Bivariante)
+
+Esta es la parte central de tu solicitud: ver cómo interactúan las variables entre sí. Tienes 4 variables numéricas, lo que resulta en **6 combinaciones posibles de pares**.
+
+#### A. Análisis Global (Todas las especies juntas)
+
+Para cada uno de los 6 pares (ej. *Sepal.Length* vs *Sepal.Width*):
+
+1.  Crea un gráfico de dispersión (Scatter plot).
+
+2.  Añade una única recta de regresión lineal (modelo lineal) que intente ajustar a todos los puntos negros.
+
+3.  Calcula el coeficiente de correlación de Pearson global.
+
+> **Advertencia:** Es posible que al ver todos los puntos juntos, la correlación sea engañosa o muy baja porque estás mezclando "peras con manzanas" (o en este caso, *Setosas* con *Virginicas*).
+
+#### B. Análisis Estratificado (Por Especie)
+
+Repite los mismos 6 gráficos de dispersión, pero esta vez:
+
+1.  Asigna un **color diferente** a cada punto según su especie.
+
+2.  Dibuja **tres rectas de regresión** independientes en el mismo gráfico (una para cada color/especie).
+
+3.  Calcula los coeficientes de correlación para cada especie por separado.
+
+**Las comparaciones clave que debes observar:**
+
+|  |  |  |
+|----|----|----|
+| **Variable X** | **Variable Y** | **Pregunta a resolver** |
+| Sepal.Length | Sepal.Width | ¿Existe correlación positiva o negativa? ¿Cambia la dirección de la recta al separar por especies? |
+| Petal.Length | Petal.Width | ¿Crecen proporcionalmente el largo y el ancho del pétalo? |
+| Sepal.Length | Petal.Length | ¿Las flores con sépalos grandes tienen pétalos grandes? |
+
+### Fase 5: Análisis Inferencial (Opcional pero recomendado)
+
+Para que el análisis sea "estadísticamente completo", no basta con "ver" las diferencias, hay que probarlas.
+
+1.  **ANOVA de un factor:** Para cada una de las 4 variables, realiza un test ANOVA para confirmar si las medias de las tres especies son significativamente diferentes.
+
+    -   *Hipótesis nula:* Las medias de las 3 especies son iguales.
+
+    -   *Hipótesis alternativa:* Al menos una especie tiene una media diferente.
+
+2.  **Test de Tukey (Post-hoc):** Si el ANOVA te dice que son diferentes, usa este test para saber *cuáles* son diferentes entre sí (¿Setosa vs Versicolor? ¿O todas contra todas?).
+
+### Resumen de entregables del proyecto
+
+Al finalizar, deberías tener:
+
+1.  Una tabla resumen de medias por especie.
+
+2.  4 Gráficos de comparación de distribuciones (puntos/cajas) por especie.
+
+3.  6 Gráficos de dispersión coloreados por especie, cada uno con 3 rectas de regresión.
+
+4.  Una conclusión escrita sobre qué variable es la mejor para distinguir entre las especies.
+
+¿Te gustaría que te dé una pista sobre qué librería gráfica (base o ggplot2) podría facilitarte más la tarea de poner las 3 rectas de regresión automáticamente?
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
