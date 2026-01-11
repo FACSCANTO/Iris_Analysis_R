@@ -189,9 +189,36 @@ hist_todo <- function(data, variable){
 colnames(Datos_iris)
 
 longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
+
+ggplot2::ggsave(
+  filename = paste("longitud_sepalo",".pdf", sep = ""),
+  plot = longitud_sepalo,
+  device = "pdf"
+)
+
 anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
+
+ggplot2::ggsave(
+  filename = paste("anchura_sepalo",".pdf", sep = ""),
+  plot = anchura_sepalo,
+  device = "pdf"
+)
+
 longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
+
+ggplot2::ggsave(
+  filename = paste("longitud_petalo",".pdf", sep = ""),
+  plot = longitud_petalo,
+  device = "pdf"
+)
+
 anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
+
+ggplot2::ggsave(
+  filename = paste("anchura_petalo",".pdf", sep = ""),
+  plot = anchura_petalo,
+  device = "pdf"
+)
 
 
 ## Poner los datos en forma larga para poder hacer histograma de todas las 
@@ -202,74 +229,53 @@ Datos_iris_largo <- Datos_iris %>%
 
 View(Datos_iris_largo)
 
-
-
-
-
-
-
-
-for(i in colnames(Datos_iris)[1:4]){
-  
-  x <- hist_todo(Datos_iris, i)
-  
-  ggplot2::ggsave(
-    filename = paste(i,".pdf", sep = ""),
-    plot = x,
-    device = "pdf"
+todo_long_sep_separado <- ggplot(Datos_iris_largo, aes(x = values)) +
+  geom_histogram(
+    bins = 20,
+    fill = "pink",
+    color = "black"
+  ) +
+  facet_grid(Species ~ measure) +
+  labs(
+    title = "Histograma de la longitud del sépalo por especie",
+    x = "Longitud del sépalo",
+    y = "Frecuencia"
   )
-  
-  
-}
-  
-  
-  
 
-
-longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
-anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
-longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
-anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
-
-
-histogramas <- c(longitud_sepalo, anchura_sepalo, longitud_petalo, anchura_petalo)
-
-histogramas[1]
-
-str(histogramas)
-
-for(i in histogramas)
 
 ggplot2::ggsave(
-  filename = paste(i,".pdf", sep = ""),
-  plot = i,
+  filename = paste("todo_long_sep_separado",".pdf", sep = ""),
+  plot = todo_long_sep_separado,
   device = "pdf"
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ## Diagramas de Caja (Boxplots): Esta es la mejor herramienta para comparar.
 
 # Eje X = Especie, Eje Y = Variable (ej. Longitud del Sépalo).
 
-# Busca outliers (puntos fuera de los bigotes).
+library(tidyverse)
 
-# Observa si las cajas (el 50% central de los datos) se solapan o están bien separadas entre especies.
+box_plot_todo <- ggplot(Datos_iris_largo, aes(x = Species, y = values)) +
+  geom_boxplot(
+    fill = "pink",
+    color = "black"
+  ) +
+  facet_wrap(~ measure) +
+  labs(
+    title = "Boxplot comparando especies",
+    x = "Especie",
+    y = "centímetros"
+  )
+
+
+ggplot2::ggsave(
+  filename = paste("box_plot_todo",".pdf", sep = ""),
+  plot = box_plot_todo,
+  device = "pdf"
+)
+
+
 
   
 
