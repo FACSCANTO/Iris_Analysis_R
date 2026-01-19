@@ -276,15 +276,96 @@ ggplot2::ggsave(
 )
 
 
+# 5. Análisis Gráfico Multivariante
 
+## Scatterplots (Gráficos de dispersión):
+## - Cruza dos variables (ej. Petal.Length vs Petal.Width).
+## - Importante: Usa el color para diferenciar las especies.
+
+install.packages("ggpubr")
+
+library(tidyverse)
+library(ggpubr)
+
+colnames(Datos_iris)
+
+## Cruzar todas las variables con todas las variables manualmente
+
+### Sepal.Length vs Sepal.Width:
+
+Sepal.Length_Sepal.Width <- ggplot(Datos_iris, aes(
+  x = Sepal.Length, y = Sepal.Width, colour = factor(Species), 
+  shape = factor(Species))) +
+  geom_point(
+    size = 1.8
+  ) +
+  labs(
+    title = "Scatterplot",
+    x = "Sepal.Length",
+    y = "Sepal.Width"
+  ) + geom_smooth(method = lm, se = FALSE) +
+  stat_regline_equation(aes(label = ..eq.label..), label.x.npc = "center", 
+                        label.y.npc = 1) + stat_cor(aes(label = ..rr.label..), label.x.npc = 0.7, label.y.npc = 0.25)
+  # For the last two functions used in this script the libarary ggpubr is required 
+
+print(Sepal.Length_Sepal.Width)
+
+ggplot2::ggsave(
+  filename = paste("Sepal.Length_Sepal.Width",".pdf", sep = ""),
+  plot = Sepal.Length_Sepal.Width,
+  device = "pdf"
+)
+
+
+
+
+### Realizar todas las combinaciones de variables automáticamente:
+
+library(tidyverse)
+library(ggpubr)
+
+var_numericas <- names(Datos_iris)[1:4]
+
+combinaciones <- combn(var_numericas, 2)
+
+
+for (i in 1:ncol(combinaciones)) {
   
-
-
-
-
-
-
-
-
-
-
+  var_x <- combinaciones[1, i]
+  var_y <- combinaciones[2, i]
+  
+  # Crear el gráfico
+  p <- ggplot(Datos_iris, aes(x = .data[[var_x]], y = .data[[var_y]], 
+                              colour = factor(Species), 
+                              shape = factor(Species))) +
+    geom_point(size = 1.8) +
+    labs(
+      title = paste("Scatterplot:", var_x, "vs", var_y),
+      x = var_x,
+      y = var_y
+    ) + 
+    geom_smooth(method = lm, se = FALSE) +
+    # Ecuación de la regresión
+    stat_regline_equation(aes(label = ..eq.label..), 
+                          label.x.npc = "center", 
+                          label.y.npc = 1) + 
+    # Coeficiente de correlación R^2
+    stat_cor(aes(label = ..rr.label..), 
+             label.x.npc = 0.7, 
+             label.y.npc = 0.25) +
+    theme_minimal()
+  
+  # Imprimir en consola (opcional)
+  print(p)
+  
+  # 5. Guardar automáticamente en PDF
+  nombre_archivo <- paste0(var_x, "_vs_", var_y, ".pdf")
+  
+  ggsave(
+    filename = nombre_archivo,
+    plot = p,
+    device = "pdf",
+    width = 7, 
+    height = 5
+  )
+}
