@@ -1,7 +1,8 @@
-# 1. Obtenir el data.frame "iris" desde R base (así podemos generar una copia del 
-# documento en la carpeta:
+# 1. Obtener el data.frame "iris" desde R base (para así poder tener guardada 
+# una cópia en la carpeta del proyecto)
 
-write.csv(iris, "iris.csv", row.names = FALSE) # Genera el document en format csv en la carpeta del projecte.
+write.csv(iris, "iris.csv", row.names = FALSE) # Genera el documento 
+# en formato csv dentro de la carpeta del proyecto.
 
 # 2.Exploración y limpieza de datos
 
@@ -15,22 +16,22 @@ str(Datos_iris) # 150 obs, 5 var (4 numéricas, 1 factor)
 
 ## 2.2. Evaluación de calidad de los datos:
 
-is.na.data.frame(Datos_iris) # Mira si hi han NA's en tot el data frame
-sum(is.na.data.frame(Datos_iris)) > 0 # Mirar si hi ha algun NA en data frame
-
+is.na.data.frame(Datos_iris) # Pregunta si los valores son NA 
+sum(is.na.data.frame(Datos_iris)) > 0 
 
 # 3.Análisis Estadístico Descriptivo
 
-## Resumen general: Obtén la media, mediana, cuartiles, mínimo y máximo de las 4 variables numéricas.
+## 3.1. Resumen general: media, mediana, cuartiles, mínimo y máximo 
+## de las 4 variables numéricas.
 
 estadistica_columnas <- summary(Datos_iris[,1:4])
 
-### Sino saps quines columnes son numeriques també es pot fer així:
+## Para seleccionar solo las columnas numéricas:
 
 estadistica_columnas_2 <- summary(Filter(is.numeric, Datos_iris))
 
 
-## Análisis por grupos (El paso clave): Dado que el objetivo suele ser distinguir especies, no basta con el resumen global.
+## 3.2. Análisis por grupos:
 
 ### Agrupa los datos por la variable Species.
 
@@ -43,9 +44,10 @@ estadistica_columnas_versicolor <- summary(Datos_iris[Datos_iris$Species == "ver
 estadistica_columnas_virginica <- summary(Datos_iris[Datos_iris$Species == "virginica",1:4])
 
 
-### Calcula la media y la desviación estándar para cada variable (Sépalo y Pétalo) dentro de cada especie.
+### Calcula la media y la desviación estándar para cada variable 
+### (Sépalo y Pétalo) dentro de cada especie.
 
-# Method 1: with nested bucles:
+### Método 1: usando bucles anidados.
 
 especies <- unique(Datos_iris$Species)
 
@@ -71,22 +73,27 @@ for(i in 1:4){
   }
 }
 
-res_final <- data.frame(esp, col, medias, std)
+res_final_Datos_iris <- data.frame(esp, col, medias, std)
 
-res_final
+res_final_Datos_iris
 
-write.csv(res_final, "res_final.csv", row.names = FALSE)
+write.csv(res_final_Datos_iris, "res_final.csv", row.names = FALSE)
 # Create the "csv" document in the working directory
+
+library(writexl)
+
+write_xlsx(res_final_Datos_iris, "res_final_Datos_iris.xlsx")
 
 # row.names = FALSE, s'utilitza perque no afegeixi columnes amb números
 # al principi.
 
 
-# Method 2: using tidyverse.
+### Método 2: usando tidyverse.
 
 library(tidyverse)
+library(writexl)
 
-## For 1 variable
+### Para 1 variable:
 
 media_long_sepalo <- Datos_iris %>% 
   group_by(Species) %>% 
@@ -94,16 +101,19 @@ media_long_sepalo <- Datos_iris %>%
 
 print(media_long_sepalo)
 
-## For all numeric variables:
+
+### Para todas las variables númericas a la vez:
 
 help(across)
-
 
 Medias_por_especie <- Datos_iris %>% 
   group_by(Species) %>% 
   summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))
 
 print(Medias_por_especie)
+
+write.csv(Medias_por_especie, "Medias_por_especie.csv", row.names = FALSE)
+write_xlsx(Medias_por_especie, "Medias_por_especie.xlsx")
 
 
 sd_por_especie <- Datos_iris %>% 
@@ -112,17 +122,19 @@ sd_por_especie <- Datos_iris %>%
 
 print(sd_por_especie)
 
+write.csv(sd_por_especie, "sd_por_especie.csv", row.names = FALSE)
+write_xlsx(sd_por_especie, "sd_por_especie.xlsx")
 
 
-# 4.Análisis Gráfico Univariante
+## 4.1. Análisis Gráfico Univariante
 
-## Analiza cada variable por separado para ver su distribución.
+### Analiza cada variable por separado para visualizar su distribución.
 
-## Histogramas: Crea un histograma para cada una de las 4 variables numéricas. 
+### Histogramas: Crea un histograma para cada una de las 4 variables numéricas. 
 
 library(ggplot2)
 
-# Histogramas superpuestos
+### Histogramas superpuestos
 
 long_sep_sobrepuesto <- ggplot(Datos_iris, aes(x = Sepal.Length, fill = Species)) +
   geom_histogram(
@@ -139,7 +151,7 @@ long_sep_sobrepuesto <- ggplot(Datos_iris, aes(x = Sepal.Length, fill = Species)
 print(long_sep_sobrepuesto)
 
 
-# Histogramas separados (facet_wrap o facet_grid):
+### Histogramas separados (facet_wrap o facet_grid):
 
 long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
   geom_histogram(
@@ -157,8 +169,8 @@ long_sep_separado <- ggplot(Datos_iris, aes(x = Sepal.Length)) +
 print(long_sep_separado)
 
 
-# Hacer una función con el código anterior para poder aplicarlo a las 
-# otras variables.
+### Hacer una función con el código anterior para poder aplicarlo a las 
+### otras variables.
 
 library(tidyverse)
 library(rlang)
@@ -188,35 +200,35 @@ hist_todo <- function(data, variable){
 
 colnames(Datos_iris)
 
-longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
+hist_longitud_sepalo <- hist_todo(Datos_iris, Sepal.Length)
 
 ggplot2::ggsave(
-  filename = paste("longitud_sepalo",".pdf", sep = ""),
-  plot = longitud_sepalo,
+  filename = paste("hist_longitud_sepalo",".pdf", sep = ""),
+  plot = hist_longitud_sepalo,
   device = "pdf"
 )
 
-anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
+hist_anchura_sepalo <- hist_todo(Datos_iris, Sepal.Width)
 
 ggplot2::ggsave(
-  filename = paste("anchura_sepalo",".pdf", sep = ""),
-  plot = anchura_sepalo,
+  filename = paste("hist_anchura_sepalo",".pdf", sep = ""),
+  plot = hist_anchura_sepalo,
   device = "pdf"
 )
 
-longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
+hist_longitud_petalo <- hist_todo(Datos_iris, Petal.Length)
 
 ggplot2::ggsave(
-  filename = paste("longitud_petalo",".pdf", sep = ""),
-  plot = longitud_petalo,
+  filename = paste("hist_longitud_petalo",".pdf", sep = ""),
+  plot = hist_longitud_petalo,
   device = "pdf"
 )
 
-anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
+hist_anchura_petalo <- hist_todo(Datos_iris, Petal.Width)
 
 ggplot2::ggsave(
-  filename = paste("anchura_petalo",".pdf", sep = ""),
-  plot = anchura_petalo,
+  filename = paste("hist_anchura_petalo",".pdf", sep = ""),
+  plot = hist_anchura_petalo,
   device = "pdf"
 )
 
@@ -229,7 +241,7 @@ Datos_iris_largo <- Datos_iris %>%
 
 View(Datos_iris_largo)
 
-todo_long_sep_separado <- ggplot(Datos_iris_largo, aes(x = values)) +
+hist_todo_long_sep_separado <- ggplot(Datos_iris_largo, aes(x = values)) +
   geom_histogram(
     bins = 20,
     fill = "pink",
@@ -244,13 +256,13 @@ todo_long_sep_separado <- ggplot(Datos_iris_largo, aes(x = values)) +
 
 
 ggplot2::ggsave(
-  filename = paste("todo_long_sep_separado",".pdf", sep = ""),
-  plot = todo_long_sep_separado,
+  filename = paste("hist_todo_long_sep_separado",".pdf", sep = ""),
+  plot = hist_todo_long_sep_separado,
   device = "pdf"
 )
 
 
-## Diagramas de Caja (Boxplots): Esta es la mejor herramienta para comparar.
+## Diagramas de Caja (Boxplots):
 
 # Eje X = Especie, Eje Y = Variable (ej. Longitud del Sépalo).
 
@@ -318,7 +330,6 @@ ggplot2::ggsave(
 
 
 
-
 ### Realizar todas las combinaciones de variables automáticamente:
 
 library(tidyverse)
@@ -369,3 +380,38 @@ for (i in 1:ncol(combinaciones)) {
     height = 5
   )
 }
+
+
+
+### Matrix de correlación con heatmap (heatmap correlation matrix):
+
+library(ggplot2)
+library(reshape2)
+
+datos_num <- Datos_iris[, 1:4]
+
+matriz_cor <- cor(datos_num)
+
+matriz_r2 <- matriz_cor^2
+
+r2_melted <- melt(matriz_r2)
+
+Matriz_Datos_iris <- ggplot(data = r2_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white") + # Crea los cuadrados
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0.5, limit = c(0,1), space = "Lab", 
+                       name="R^2") +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 4) + # Añade el valor numérico
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  coord_fixed() +
+  labs(title = "Matriz de Coeficientes de Determinación (R2)",
+       x = "", y = "")
+
+print(Matriz_Datos_iris)
+
+ggplot2::ggsave(
+  filename = paste("Matriz_Datos_iris",".pdf", sep = ""),
+  plot = Matriz_Datos_iris,
+  device = "pdf"
+)
